@@ -2859,7 +2859,7 @@ def _warn_deprecation(name: str, module_globals: dict[str, Any]) -> Any:
         )
     else:
         msg = f"the '{name}' constant is deprecated, use the 'TableStyle' enum instead"
-    warnings.warn(msg, DeprecationWarning, stacklevel=2)
+    warnings.warn(msg, DeprecationWarning, stacklevel=3)
     return val
 
 
