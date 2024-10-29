@@ -2601,19 +2601,19 @@ class TestGeneralOutput:
 
 class TestDeprecations:
     @pytest.mark.parametrize(
-        ["module_name"],
+        "module_name",
         [
-            ("prettytable",),
-            ("prettytable.prettytable",),
+            "prettytable",
+            "prettytable.prettytable",
         ],
     )
     @pytest.mark.parametrize(
-        ["name"],
+        "name",
         [
-            ("FRAME",),
-            ("ALL",),
-            ("NONE",),
-            ("HEADER",),
+            "FRAME",
+            "ALL",
+            "NONE",
+            "HEADER",
         ],
     )
     def test_hrule_constant_deprecations(self, module_name: str, name: str) -> None:
@@ -2621,26 +2621,26 @@ class TestDeprecations:
             exec(f"from {module_name} import {name}")
 
     @pytest.mark.parametrize(
-        ["module_name"],
+        "module_name",
         [
-            ("prettytable",),
-            ("prettytable.prettytable",),
+            "prettytable",
+            "prettytable.prettytable",
         ],
     )
     @pytest.mark.parametrize(
-        ["name"],
+        "name",
         [
-            ("DEFAULT",),
-            ("MSWORD_FRIENDLY",),
-            ("PLAIN_COLUMNS",),
-            ("MARKDOWN",),
-            ("ORGMODE",),
-            ("DOUBLE_BORDER",),
-            ("SINGLE_BORDER",),
-            ("RANDOM",),
+            "DEFAULT",
+            "MSWORD_FRIENDLY",
+            "PLAIN_COLUMNS",
+            "MARKDOWN",
+            "ORGMODE",
+            "DOUBLE_BORDER",
+            "SINGLE_BORDER",
+            "RANDOM",
         ],
     )
-    def test_tablestyle_constant_deprecations(
+    def test_table_style_constant_deprecations(
         self, module_name: str, name: str
     ) -> None:
         with pytest.deprecated_call(match=f"the '{name}' constant is deprecated"):
