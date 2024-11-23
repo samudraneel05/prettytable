@@ -847,7 +847,6 @@ class PrettyTable:
 
     @max_width.setter
     def max_width(self, val) -> None:
-        print("max_width setter")
         if val is None or (isinstance(val, dict) and len(val) == 0):
             self._max_width = {}
         else:
