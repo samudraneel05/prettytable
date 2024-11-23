@@ -2354,6 +2354,69 @@ class TestMaxTableWidth:
 +---+-----------------+---+-----------------+---+-----------------+""".strip()
         )
 
+    def test_table_width_ctor1(self) -> None:
+        table = PrettyTable(max_width=10)
+        table.add_row(
+            [
+                "Lorem",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ",
+                "ipsum",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ",
+                "dolor",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ",
+            ]
+        )
+
+        assert (
+            table.get_string().strip()
+            == """
++---------+------------+---------+------------+---------+------------+
+| Field 1 |  Field 2   | Field 3 |  Field 4   | Field 5 |  Field 6   |
++---------+------------+---------+------------+---------+------------+
+|  Lorem  |   Lorem    |  ipsum  |   Lorem    |  dolor  |   Lorem    |
+|         |   ipsum    |         |   ipsum    |         |   ipsum    |
+|         | dolor sit  |         | dolor sit  |         | dolor sit  |
+|         |   amet,    |         |   amet,    |         |   amet,    |
+|         | consetetur |         | consetetur |         | consetetur |
+|         | sadipscing |         | sadipscing |         | sadipscing |
+|         | elitr, sed |         | elitr, sed |         | elitr, sed |
+|         |    diam    |         |    diam    |         |    diam    |
++---------+------------+---------+------------+---------+------------+""".strip()
+        )
+
+    def test_table_width_ctor2(self) -> None:
+        table = PrettyTable(
+            ["Field 1", "Field 2", "Field 3", "Field 4", "Field 5", "Field 6"],
+            max_width=10,
+        )
+        table.add_row(
+            [
+                "Lorem",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ",
+                "ipsum",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ",
+                "dolor",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ",
+            ]
+        )
+
+        assert (
+            table.get_string().strip()
+            == """
++---------+------------+---------+------------+---------+------------+
+| Field 1 |  Field 2   | Field 3 |  Field 4   | Field 5 |  Field 6   |
++---------+------------+---------+------------+---------+------------+
+|  Lorem  |   Lorem    |  ipsum  |   Lorem    |  dolor  |   Lorem    |
+|         |   ipsum    |         |   ipsum    |         |   ipsum    |
+|         | dolor sit  |         | dolor sit  |         | dolor sit  |
+|         |   amet,    |         |   amet,    |         |   amet,    |
+|         | consetetur |         | consetetur |         | consetetur |
+|         | sadipscing |         | sadipscing |         | sadipscing |
+|         | elitr, sed |         | elitr, sed |         | elitr, sed |
+|         |    diam    |         |    diam    |         |    diam    |
++---------+------------+---------+------------+---------+------------+""".strip()
+        )
+
     def test_max_table_width_wide_vrules_frame(self) -> None:
         table = PrettyTable()
         table.max_table_width = 52
