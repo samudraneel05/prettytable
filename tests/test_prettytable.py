@@ -2355,6 +2355,7 @@ class TestMaxTableWidth:
         )
 
     def test_table_width_on_init_wo_columns(self) -> None:
+        """See also #272"""
         table = PrettyTable(max_width=10)
         table.add_row(
             [
@@ -2385,6 +2386,7 @@ class TestMaxTableWidth:
         )
 
     def test_table_width_on_init_with_columns(self) -> None:
+        """See also #272"""
         table = PrettyTable(
             ["Field 1", "Field 2", "Field 3", "Field 4", "Field 5", "Field 6"],
             max_width=10,
@@ -2415,6 +2417,22 @@ class TestMaxTableWidth:
 |         | elitr, sed |         | elitr, sed |         | elitr, sed |
 |         |    diam    |         |    diam    |         |    diam    |
 +---------+------------+---------+------------+---------+------------+""".strip()
+        )
+
+    def test_table_float_formatting_on_init_wo_columns(self) -> None:
+        """See also #243"""
+        table = prettytable.PrettyTable(float_format="10.2")
+        table.field_names = ["Metric", "Initial sol.", "Best sol."]
+        table.add_rows([["foo", 1.0 / 3.0, 1.0 / 3.0]])
+
+        assert (
+            table.get_string().strip()
+            == """
++--------+--------------+------------+
+| Metric | Initial sol. | Best sol.  |
++--------+--------------+------------+
+|  foo   |        0.33  |       0.33 |
++--------+--------------+------------+""".strip()
         )
 
     def test_max_table_width_wide_vrules_frame(self) -> None:
