@@ -2354,7 +2354,7 @@ class TestMaxTableWidth:
 +---+-----------------+---+-----------------+---+-----------------+""".strip()
         )
 
-    def test_table_width_ctor1(self) -> None:
+    def test_table_width_on_init_wo_columns(self) -> None:
         table = PrettyTable(max_width=10)
         table.add_row(
             [
@@ -2384,7 +2384,7 @@ class TestMaxTableWidth:
 +---------+------------+---------+------------+---------+------------+""".strip()
         )
 
-    def test_table_width_ctor2(self) -> None:
+    def test_table_width_on_init_with_columns(self) -> None:
         table = PrettyTable(
             ["Field 1", "Field 2", "Field 3", "Field 4", "Field 5", "Field 6"],
             max_width=10,
