@@ -2477,7 +2477,7 @@ class TestMaxTableWidth:
             <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 207</td>
         </tr>
     </tbody>
-</table>""".strip()
+</table>""".strip()  # noqa: E501
         )
 
     def test_max_table_width_wide_vrules_frame(self) -> None:
