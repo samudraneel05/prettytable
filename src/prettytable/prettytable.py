@@ -1453,10 +1453,9 @@ class PrettyTable:
     ##############################
 
     def set_style(self, style: TableStyle) -> None:
+        self._set_default_style()
         self._style = style
-        if style == TableStyle.DEFAULT:
-            self._set_default_style()
-        elif style == TableStyle.MSWORD_FRIENDLY:
+        if style == TableStyle.MSWORD_FRIENDLY:
             self._set_msword_style()
         elif style == TableStyle.PLAIN_COLUMNS:
             self._set_columns_style()
@@ -1470,12 +1469,11 @@ class PrettyTable:
             self._set_single_border_style()
         elif style == TableStyle.RANDOM:
             self._set_random_style()
-        else:
+        elif style != TableStyle.DEFAULT:
             msg = "Invalid pre-set style"
             raise ValueError(msg)
 
     def _set_orgmode_style(self) -> None:
-        self._set_default_style()
         self.orgmode = True
 
     def _set_markdown_style(self) -> None:
