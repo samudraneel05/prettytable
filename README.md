@@ -432,8 +432,9 @@ You can set the style for your table using the `set_style` method before any cal
 `print` or `get_string`. Here's how to print a table in Markdown format:
 
 ```python
-from prettytable import MARKDOWN
-table.set_style(MARKDOWN)
+from prettytable import TableStyle
+
+table.set_style(TableStyle.MARKDOWN)
 print(table)
 ```
 
