@@ -1658,8 +1658,8 @@ class PrettyTable:
         Arguments:
         fieldname - name of the field to contain the new column of data"""
         self._field_names.insert(0, fieldname)
-        self._align[fieldname] = self.align
-        self._valign[fieldname] = self.valign
+        self._align[fieldname] = self._kwargs["align"] or "c"
+        self._valign[fieldname] = self._kwargs["valign"] or "t"
         for i, row in enumerate(self._rows):
             row.insert(0, i + 1)
 
