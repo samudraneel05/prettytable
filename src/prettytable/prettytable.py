@@ -2867,7 +2867,7 @@ def from_html_one(html_code: str, **kwargs) -> PrettyTable:
 
 def _warn_deprecation(name: str, module_globals: dict[str, Any]) -> Any:
     if (val := module_globals.get(f"_DEPRECATED_{name}")) is None:
-        msg = f"module '{__name__}' has no attribute '{name}"
+        msg = f"module '{__name__}' has no attribute '{name}'"
         raise AttributeError(msg)
     module_globals[name] = val
     if name in {"FRAME", "ALL", "NONE", "HEADER"}:
