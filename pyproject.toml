@@ -2,7 +2,7 @@
 build-backend = "hatchling.build"
 requires = [
   "hatch-vcs",
-  "hatchling",
+  "hatchling>=1.27",
 ]
 
 [project]
@@ -10,11 +10,11 @@ name = "prettytable"
 description = "A simple Python library for easily displaying tabular data in a visually appealing ASCII table format"
 readme = "README.md"
 license = "BSD-3-Clause"
+license-files = [ "LICENSE" ]
 maintainers = [ { name = "Hugo van Kemenade" } ]
 authors = [ { name = "Luke Maurits", email = "luke@maurits.id.au" } ]
 requires-python = ">=3.9"
 classifiers = [
-  "License :: OSI Approved :: BSD License",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.9",
@@ -22,6 +22,7 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
   "Topic :: Text Processing",
@@ -55,9 +56,9 @@ fix = true
 
 lint.select = [
   "C4",     # flake8-comprehensions
-  "E",      # pycodestyle errors
+  "E",      # pycodestyle
   "EM",     # flake8-errmsg
-  "F",      # pyflakes errors
+  "F",      # pyflakes
   "I",      # isort
   "ICN",    # flake8-import-conventions
   "ISC",    # flake8-implicit-str-concat
@@ -67,14 +68,15 @@ lint.select = [
   "RUF022", # unsorted-dunder-all
   "RUF100", # unused noqa (yesqa)
   "UP",     # pyupgrade
-  "W",      # pycodestyle warnings
+  "W",      # pycodestyle
   "YTT",    # flake8-2020
 ]
 lint.ignore = [
-  "E203", # Whitespace before ':'
-  "E221", # Multiple spaces before operator
-  "E226", # Missing whitespace around arithmetic operator
-  "E241", # Multiple spaces after ','
+  "E203",  # Whitespace before ':'
+  "E221",  # Multiple spaces before operator
+  "E226",  # Missing whitespace around arithmetic operator
+  "E241",  # Multiple spaces after ','
+  "UP038", # Makes code slower and more verbose
 ]
 lint.flake8-import-conventions.aliases.datetime = "dt"
 lint.flake8-import-conventions.banned-from = [ "datetime" ]
@@ -82,7 +84,7 @@ lint.isort.known-first-party = [ "prettytable" ]
 lint.isort.required-imports = [ "from __future__ import annotations" ]
 
 [tool.pyproject-fmt]
-max_supported_python = "3.13"
+max_supported_python = "3.14"
 
 [tool.pytest.ini_options]
 filterwarnings = [

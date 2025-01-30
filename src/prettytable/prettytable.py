@@ -2520,9 +2520,12 @@ class PrettyTable:
                 if options["escape_header"]:
                     field = escape(field)
 
+                content = field.replace("\n", linebreak)
                 lines.append(
-                    '            <th style="padding-left: %dem; padding-right: %dem; text-align: center">%s</th>'  # noqa: E501
-                    % (lpad, rpad, field.replace("\n", linebreak))
+                    f'            <th style="'
+                    f"padding-left: {lpad}em; "
+                    f"padding-right: {rpad}em; "
+                    f'text-align: center">{content}</th>'
                 )
             lines.append("        </tr>")
             lines.append("    </thead>")
@@ -2550,15 +2553,13 @@ class PrettyTable:
                 if options["escape_data"]:
                     datum = escape(datum)
 
+                content = datum.replace("\n", linebreak)
                 lines.append(
-                    '            <td style="padding-left: %dem; padding-right: %dem; text-align: %s; vertical-align: %s">%s</td>'  # noqa: E501
-                    % (
-                        lpad,
-                        rpad,
-                        align,
-                        valign,
-                        datum.replace("\n", linebreak),
-                    )
+                    f'            <td style="'
+                    f"padding-left: {lpad}em; "
+                    f"padding-right: {rpad}em; "
+                    f"text-align: {align}; "
+                    f'vertical-align: {valign}">{content}</td>'
                 )
             lines.append("        </tr>")
         lines.append("    </tbody>")
@@ -2870,7 +2871,7 @@ def from_html_one(html_code: str, **kwargs) -> PrettyTable:
 
 def _warn_deprecation(name: str, module_globals: dict[str, Any]) -> Any:
     if (val := module_globals.get(f"_DEPRECATED_{name}")) is None:
-        msg = f"module '{__name__}' has no attribute '{name}"
+        msg = f"module '{__name__}' has no attribute '{name}'"
         raise AttributeError(msg)
     module_globals[name] = val
     if name in {"FRAME", "ALL", "NONE", "HEADER"}:
