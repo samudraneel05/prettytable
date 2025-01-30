@@ -800,6 +800,12 @@ class TestSorting:
         assert "10" not in oldstyle
         assert "20" in oldstyle
 
+    def test_sortby_at_class_declaration(self) -> None:
+        """
+        Fix #354 where initialization of a table with sortby fails
+        """
+        PrettyTable(field_names=["My", "Fields"], sortby="Fields")
+
 
 @pytest.fixture(scope="function")
 def float_pt() -> PrettyTable:

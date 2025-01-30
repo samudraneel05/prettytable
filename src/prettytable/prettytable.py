@@ -325,12 +325,17 @@ class PrettyTable:
             "escape_data",
         ]
 
+        self._none_format: dict[str, str | None] = {}
         self._kwargs = {}
+        if field_names:
+            self.field_names = field_names
+        else:
+            self._widths: list[int] = []
+
         for option in self._options:
             if option in kwargs:
                 self._validate_option(option, kwargs[option])
                 self._kwargs[option] = kwargs[option]
-
             else:
                 kwargs[option] = None
                 self._kwargs[option] = None
@@ -339,7 +344,6 @@ class PrettyTable:
         self._start = kwargs["start"] or 0
         self._end = kwargs["end"] or None
         self._fields = kwargs["fields"] or None
-        self._none_format: dict[str, str | None] = {}
 
         if kwargs["header"] in (True, False):
             self._header = kwargs["header"]
@@ -372,11 +376,6 @@ class PrettyTable:
             self._escape_header = kwargs["escape_header"]
         else:
             self._escape_header = True
-
-        if field_names:
-            self.field_names = field_names
-        else:
-            self._widths: list[int] = []
 
         self._column_specific_args()
 
@@ -416,14 +415,19 @@ class PrettyTable:
 
     def _column_specific_args(self):
         # Column specific arguments, use property.setters
-        self.align = self._kwargs["align"] or {}
-        self.valign = self._kwargs["valign"] or {}
-        self.max_width = self._kwargs["max_width"] or {}
-        self.min_width = self._kwargs["min_width"] or {}
-        self.int_format = self._kwargs["int_format"] or {}
-        self.float_format = self._kwargs["float_format"] or {}
-        self.custom_format = self._kwargs["custom_format"] or {}
-        self.none_format = self._kwargs["none_format"] or {}
+        for attr in (
+            "align",
+            "valign",
+            "max_width",
+            "min_width",
+            "int_format",
+            "float_format",
+            "custom_format",
+            "none_format",
+        ):
+            setattr(
+                self, attr, (self._kwargs[attr] or {}) if attr in self._kwargs else {}
+            )
 
     def _justify(self, text: str, width: int, align: AlignType) -> str:
         excess = width - _str_block_width(text)
