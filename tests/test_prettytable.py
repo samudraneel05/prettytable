@@ -2612,6 +2612,43 @@ class TestMaxTableWidth:
 +---------+------------+---------+------------+---------+------------+""".strip()
         )
 
+    def test_table_minwidth_on_init_with_columns(self) -> None:
+        table = PrettyTable(["Field 1", "Field 2"], min_width=20)
+        table.add_row(
+            [
+                "Lorem",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ",
+            ]
+        )
+
+        assert (
+            table.get_string().strip()
+            == """+----------------------+--------------------------------------------------------------------+
+|       Field 1        |                              Field 2                               |
++----------------------+--------------------------------------------------------------------+
+|        Lorem         | Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam  |
++----------------------+--------------------------------------------------------------------+"""
+        )
+
+    def test_table_min_max_width_on_init_with_columns(self) -> None:
+        table = PrettyTable(["Field 1", "Field 2"], min_width=20, max_width=40)
+        table.add_row(
+            [
+                "Lorem",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ",
+            ]
+        )
+
+        assert (
+            table.get_string().strip()
+            == """+----------------------+------------------------------------------+
+|       Field 1        |                 Field 2                  |
++----------------------+------------------------------------------+
+|        Lorem         |  Lorem ipsum dolor sit amet, consetetur  |
+|                      |        sadipscing elitr, sed diam        |
++----------------------+------------------------------------------+"""
+        )
+
     def test_table_float_formatting_on_init_wo_columns(self) -> None:
         """See also #243"""
         table = prettytable.PrettyTable(float_format="10.2")
