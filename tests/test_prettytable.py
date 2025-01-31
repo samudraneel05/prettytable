@@ -788,6 +788,40 @@ class TestSorting:
 """.strip()
         )
 
+    def test_sort_key_at_class_declaration(self) -> None:
+        # Test sorting by length of city name
+        def key(vals):
+            vals[0] = len(vals[0])
+            return vals
+
+        table = PrettyTable(
+            field_names=["City name", "Area", "Population", "Annual Rainfall"],
+            sortby="City name",
+            sort_key=key,
+        )
+        assert table.sort_key == key
+        table.add_row(["Adelaide", 1295, 1158259, 600.5])
+        table.add_row(["Brisbane", 5905, 1857594, 1146.4])
+        table.add_row(["Darwin", 112, 120900, 1714.7])
+        table.add_row(["Hobart", 1357, 205556, 619.5])
+        table.add_row(["Sydney", 2058, 4336374, 1214.8])
+        table.add_row(["Melbourne", 1566, 3806092, 646.9])
+        table.add_row(["Perth", 5386, 1554769, 869.4])
+        assert (
+            """+-----------+------+------------+-----------------+
+| City name | Area | Population | Annual Rainfall |
++-----------+------+------------+-----------------+
+|   Perth   | 5386 |  1554769   |      869.4      |
+|   Darwin  | 112  |   120900   |      1714.7     |
+|   Hobart  | 1357 |   205556   |      619.5      |
+|   Sydney  | 2058 |  4336374   |      1214.8     |
+|  Adelaide | 1295 |  1158259   |      600.5      |
+|  Brisbane | 5905 |  1857594   |      1146.4     |
+| Melbourne | 1566 |  3806092   |      646.9      |
++-----------+------+------------+-----------------+"""
+            == table.get_string().strip()
+        )
+
     def test_sort_slice(self) -> None:
         """Make sure sorting and slicing interact in the expected way"""
         table = PrettyTable(["Foo"])
@@ -799,6 +833,37 @@ class TestSorting:
         oldstyle = table.get_string(sortby="Foo", end=10, oldsortslice=True)
         assert "10" not in oldstyle
         assert "20" in oldstyle
+
+    def test_sortby_at_class_declaration(self) -> None:
+        """
+        Fix #354 where initialization of a table with sortby fails
+        """
+        table = PrettyTable(
+            field_names=["City name", "Area", "Population", "Annual Rainfall"],
+            sortby="Area",
+        )
+        assert table.sortby == "Area"
+        table.add_row(["Adelaide", 1295, 1158259, 600.5])
+        table.add_row(["Brisbane", 5905, 1857594, 1146.4])
+        table.add_row(["Darwin", 112, 120900, 1714.7])
+        table.add_row(["Hobart", 1357, 205556, 619.5])
+        table.add_row(["Sydney", 2058, 4336374, 1214.8])
+        table.add_row(["Melbourne", 1566, 3806092, 646.9])
+        table.add_row(["Perth", 5386, 1554769, 869.4])
+        assert (
+            """+-----------+------+------------+-----------------+
+| City name | Area | Population | Annual Rainfall |
++-----------+------+------------+-----------------+
+|   Darwin  | 112  |   120900   |      1714.7     |
+|  Adelaide | 1295 |  1158259   |      600.5      |
+|   Hobart  | 1357 |   205556   |      619.5      |
+| Melbourne | 1566 |  3806092   |      646.9      |
+|   Sydney  | 2058 |  4336374   |      1214.8     |
+|   Perth   | 5386 |  1554769   |      869.4      |
+|  Brisbane | 5905 |  1857594   |      1146.4     |
++-----------+------+------------+-----------------+"""
+            == table.get_string().strip()
+        )
 
 
 @pytest.fixture(scope="function")
@@ -2547,6 +2612,43 @@ class TestMaxTableWidth:
 +---------+------------+---------+------------+---------+------------+""".strip()
         )
 
+    def test_table_minwidth_on_init_with_columns(self) -> None:
+        table = PrettyTable(["Field 1", "Field 2"], min_width=20)
+        table.add_row(
+            [
+                "Lorem",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ",
+            ]
+        )
+
+        assert (
+            table.get_string().strip()
+            == """+----------------------+--------------------------------------------------------------------+
+|       Field 1        |                              Field 2                               |
++----------------------+--------------------------------------------------------------------+
+|        Lorem         | Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam  |
++----------------------+--------------------------------------------------------------------+"""  # noqa: E501
+        )
+
+    def test_table_min_max_width_on_init_with_columns(self) -> None:
+        table = PrettyTable(["Field 1", "Field 2"], min_width=20, max_width=40)
+        table.add_row(
+            [
+                "Lorem",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ",
+            ]
+        )
+
+        assert (
+            table.get_string().strip()
+            == """+----------------------+------------------------------------------+
+|       Field 1        |                 Field 2                  |
++----------------------+------------------------------------------+
+|        Lorem         |  Lorem ipsum dolor sit amet, consetetur  |
+|                      |        sadipscing elitr, sed diam        |
++----------------------+------------------------------------------+"""
+        )
+
     def test_table_float_formatting_on_init_wo_columns(self) -> None:
         """See also #243"""
         table = prettytable.PrettyTable(float_format="10.2")
@@ -2670,6 +2772,61 @@ class TestMaxTableWidth:
                       dolore magna aliquyam erat,   
                            sed diam voluptua        
 ----------------------------------------------------""".strip()  # noqa: W291
+        )
+
+
+class TestFields:
+    def test_fields_at_class_declaration(self) -> None:
+        table = PrettyTable(
+            field_names=["City name", "Area", "Population", "Annual Rainfall"],
+            fields=["City name", "Annual Rainfall"],
+        )
+        table.add_row(["Adelaide", 1295, 1158259, 600.5])
+        table.add_row(["Brisbane", 5905, 1857594, 1146.4])
+        table.add_row(["Darwin", 112, 120900, 1714.7])
+        table.add_row(["Hobart", 1357, 205556, 619.5])
+        table.add_row(["Sydney", 2058, 4336374, 1214.8])
+        table.add_row(["Melbourne", 1566, 3806092, 646.9])
+        table.add_row(["Perth", 5386, 1554769, 869.4])
+        assert (
+            """+-----------+-----------------+
+| City name | Annual Rainfall |
++-----------+-----------------+
+|  Adelaide |      600.5      |
+|  Brisbane |      1146.4     |
+|   Darwin  |      1714.7     |
+|   Hobart  |      619.5      |
+|   Sydney  |      1214.8     |
+| Melbourne |      646.9      |
+|   Perth   |      869.4      |
++-----------+-----------------+"""
+            == table.get_string().strip()
+        )
+
+    def test_fields(self) -> None:
+        table = PrettyTable()
+        table.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+        table.fields = ["City name", "Annual Rainfall"]
+        table.add_row(["Adelaide", 1295, 1158259, 600.5])
+        table.add_row(["Brisbane", 5905, 1857594, 1146.4])
+        table.add_row(["Darwin", 112, 120900, 1714.7])
+        table.add_row(["Hobart", 1357, 205556, 619.5])
+        table.add_row(["Sydney", 2058, 4336374, 1214.8])
+        table.add_row(["Melbourne", 1566, 3806092, 646.9])
+        table.add_row(["Perth", 5386, 1554769, 869.4])
+        assert (
+            """+-----------+-----------------+
+| City name | Annual Rainfall |
++-----------+-----------------+
+|  Adelaide |      600.5      |
+|  Brisbane |      1146.4     |
+|   Darwin  |      1714.7     |
+|   Hobart  |      619.5      |
+|   Sydney  |      1214.8     |
+| Melbourne |      646.9      |
+|   Perth   |      869.4      |
++-----------+-----------------+"""
+            == table.get_string().strip()
         )
 
 
