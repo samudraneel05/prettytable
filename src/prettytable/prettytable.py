@@ -1618,6 +1618,11 @@ class PrettyTable:
         del self._rows[row_index]
         del self._dividers[row_index]
 
+    def add_divider(self) -> None:
+        """Add a divider to the table"""
+        if len(self._dividers) >= 1:
+            self._dividers[-1] = True
+
     def add_column(
         self,
         fieldname: str,
