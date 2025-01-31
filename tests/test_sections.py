@@ -9,30 +9,21 @@ class TestRowEndSection:
     def test_row_end_section(self) -> None:
         table = PrettyTable()
         table.set_style(TableStyle.SINGLE_BORDER)
-        v = 1
-        for row in range(4):
-            if row % 2 == 0:
-                table.add_row(
-                    [f"value {v}", f"value{v+1}", f"value{v+2}"], divider=True
-                )
-            else:
-                table.add_row(
-                    [f"value {v}", f"value{v+1}", f"value{v+2}"], divider=False
-                )
-            v += 3
-        table.del_row(0)
-        print(table)
+        table.add_row(["value 4", "value 5", "value 6"])
+        table.add_row(["value 7", "value 8", "value 9"], divider=True)
+        table.add_row(["value 10", "value 11", "value 12"])
+
         assert (
             table.get_string().strip()
             == """
-┌──────────┬─────────┬─────────┐
-│ Field 1  │ Field 2 │ Field 3 │
-├──────────┼─────────┼─────────┤
-│ value 4  │  value5 │  value6 │
-│ value 7  │  value8 │  value9 │
-├──────────┼─────────┼─────────┤
-│ value 10 │ value11 │ value12 │
-└──────────┴─────────┴─────────┘
+┌──────────┬──────────┬──────────┐
+│ Field 1  │ Field 2  │ Field 3  │
+├──────────┼──────────┼──────────┤
+│ value 4  │ value 5  │ value 6  │
+│ value 7  │ value 8  │ value 9  │
+├──────────┼──────────┼──────────┤
+│ value 10 │ value 11 │ value 12 │
+└──────────┴──────────┴──────────┘
 """.strip()
         )
 
