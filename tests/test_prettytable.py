@@ -2833,6 +2833,7 @@ class TestFields:
 class TestRowEndSection:
     def test_row_end_section(self) -> None:
         table = PrettyTable()
+        table.set_style(TableStyle.SINGLE_BORDER)
         v = 1
         for row in range(4):
             if row % 2 == 0:
@@ -2845,17 +2846,18 @@ class TestRowEndSection:
                 )
             v += 3
         table.del_row(0)
+        print(table)
         assert (
             table.get_string().strip()
             == """
-+----------+---------+---------+
-| Field 1  | Field 2 | Field 3 |
-+----------+---------+---------+
-| value 4  |  value5 |  value6 |
-| value 7  |  value8 |  value9 |
-+----------+---------+---------+
-| value 10 | value11 | value12 |
-+----------+---------+---------+
+┌──────────┬─────────┬─────────┐
+│ Field 1  │ Field 2 │ Field 3 │
+├──────────┼─────────┼─────────┤
+│ value 4  │  value5 │  value6 │
+│ value 7  │  value8 │  value9 │
+└──────────┴─────────┴─────────┘
+│ value 10 │ value11 │ value12 │
+└──────────┴─────────┴─────────┘
 """.strip()
         )
 
