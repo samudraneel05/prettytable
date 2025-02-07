@@ -537,6 +537,7 @@ The options are:
 | `max_width`                  | Number of characters used for maximum width of a column.                                                                                                                                         |
 | `min_width`                  | Number of characters used for minimum width of a column.                                                                                                                                         |
 | `use_header_width`           | A Boolean option (must be `True` or `False`). Controls whether the width of the header is used for computing column width. Default: `True`.                                                      |
+| `break_on_hyphens`           | Whether long lines are wrapped on hyphens. Default: `True`.                                                                                                                                      |
 
 You can set the style options to your own settings in two ways:
 

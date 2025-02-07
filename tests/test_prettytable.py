@@ -2505,6 +2505,47 @@ class TestMinTableWidth:
                 ]
 
 
+class TestBreakOnHyphens:
+    row = [
+        "bluedevil breeze breeze-gtk eos-bash-shared glib2 "
+        "kactivitymanagerd kde-cli-tools kde-gtk-config kdecoration"
+    ]
+    EXPECTED_TRUE = """+------------------------------------------+
+|                 Field 1                  |
++------------------------------------------+
+|  bluedevil breeze breeze-gtk eos-bash-   |
+| shared glib2 kactivitymanagerd kde-cli-  |
+|     tools kde-gtk-config kdecoration     |
++------------------------------------------+"""
+    EXPECTED_FALSE = """+------------------------------------------+
+|                 Field 1                  |
++------------------------------------------+
+|       bluedevil breeze breeze-gtk        |
+| eos-bash-shared glib2 kactivitymanagerd  |
+| kde-cli-tools kde-gtk-config kdecoration |
++------------------------------------------+"""
+
+    def test_break_on_hyphens(self) -> None:
+        table = PrettyTable(max_width=40)
+        table.break_on_hyphens = False
+        assert not table.break_on_hyphens
+        table.add_row(self.row)
+        assert table.get_string().strip() == self.EXPECTED_FALSE
+
+    def test_break_on_hyphens_on_init(self) -> None:
+        table = PrettyTable(max_width=40, break_on_hyphens=False)
+        assert not table._break_on_hyphens
+        assert not table.break_on_hyphens
+        table.add_row(self.row)
+        assert table.get_string().strip() == self.EXPECTED_FALSE
+
+    def test_break_on_hyphens_default(self) -> None:
+        table = PrettyTable(max_width=40)
+        assert table.break_on_hyphens
+        table.add_row(self.row)
+        assert table.get_string().strip() == self.EXPECTED_TRUE
+
+
 class TestMaxTableWidth:
     def test_max_table_width(self) -> None:
         table = PrettyTable()
