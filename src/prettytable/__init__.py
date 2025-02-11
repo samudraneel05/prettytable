@@ -28,6 +28,7 @@ from .prettytable import (  # noqa: F401
     from_html,
     from_html_one,
     from_json,
+    from_mediawiki,
 )
 
 __all__ = [

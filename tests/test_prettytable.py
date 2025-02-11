@@ -21,6 +21,7 @@ from prettytable import (
     from_html,
     from_html_one,
     from_json,
+    from_mediawiki,
 )
 
 
@@ -266,6 +267,24 @@ class TestBuildEquivalence:
     ) -> None:
         assert left_hand.get_latex_string() == right_hand.get_latex_string()
 
+    @pytest.mark.parametrize(
+        ["left_hand", "right_hand"],
+        [
+            (
+                lf("row_prettytable"),
+                lf("col_prettytable"),
+            ),
+            (
+                lf("row_prettytable"),
+                lf("mix_prettytable"),
+            ),
+        ],
+    )
+    def test_equivalence_mediawiki(
+        self, left_hand: PrettyTable, right_hand: PrettyTable
+    ) -> None:
+        assert left_hand.get_mediawiki_string() == right_hand.get_mediawiki_string()
+
 
 class TestDeleteColumn:
     def test_delete_column(self) -> None:
@@ -319,6 +338,11 @@ class TestFieldNameLessTable:
         output = field_name_less_table.get_latex_string()
         assert "Field 1 & Field 2 & Field 3 & Field 4 \\\\" in output
         assert "Adelaide & 1295 & 1158259 & 600.5 \\\\" in output
+
+    def test_can_string_mediawiki(self, field_name_less_table: PrettyTable) -> None:
+        output = field_name_less_table.get_mediawiki_string(header=True)
+        assert "! Field 1" in output
+        assert "| Adelaide" in output
 
     def test_add_field_names_later(self, field_name_less_table: PrettyTable) -> None:
         field_name_less_table.field_names = [
@@ -387,6 +411,13 @@ class TestAlignment:
         after = aligned_after_table.get_latex_string()
         assert before == after
 
+    def test_aligned_mediawiki(
+        self, aligned_before_table: PrettyTable, aligned_after_table: PrettyTable
+    ) -> None:
+        before = aligned_before_table.get_mediawiki_string(header=True)
+        after = aligned_after_table.get_mediawiki_string(header=True)
+        assert before == after
+
 
 @pytest.fixture(scope="function")
 def city_data_prettytable() -> PrettyTable:
@@ -414,6 +445,31 @@ def city_data_from_csv() -> PrettyTable:
     Darwin, 0112, 120900, 1714.7"""
     csv_fp = io.StringIO(csv_string)
     return from_csv(csv_fp)
+
+
+@pytest.fixture(scope="function")
+def city_data_from_mediawiki() -> PrettyTable:
+    wiki_text = """
+    {| class="wikitable"
+    |-
+    ! City name !! Area !! Population !! Annual Rainfall
+    |-
+    | Sydney || 2058 || 4336374 || 1214.8
+    |-
+    | Melbourne || 1566 || 3806092 || 646.9
+    |-
+    | Brisbane || 5905 || 1857594 || 1146.4
+    |-
+    | Perth || 5386 || 1554769 || 869.4
+    |-
+    | Adelaide || 1295 || 1158259 || 600.5
+    |-
+    | Hobart || 1357 || 205556 || 619.5
+    |-
+    | Darwin || 0112 || 120900 || 1714.7
+    |}
+    """
+    return from_mediawiki(wiki_text)
 
 
 class TestOptionOverride:
@@ -1539,6 +1595,104 @@ class TestHtmlOutput:
     </tbody>
 </table>
 """.strip()  # noqa: E501
+        )
+
+
+class TestMediawikiOutput:
+    def test_mediawiki_output(self) -> None:
+        t = helper_table()
+        result = t.get_mediawiki_string(header=True)
+        assert (
+            result.strip()
+            == """
+{| class="wikitable"
+|-
+!  !! Field 1 !! Field 2 !! Field 3
+|-
+| 1 || value 1 || value2 || value3
+|-
+| 4 || value 4 || value5 || value6
+|-
+| 7 || value 7 || value8 || value9
+|}
+""".strip()
+        )
+
+    def test_mediawiki_output_without_header(self) -> None:
+        t = helper_table()
+        result = t.get_mediawiki_string(header=False)
+        assert (
+            result.strip()
+            == """
+{| class="wikitable"
+|-
+| 1 || value 1 || value2 || value3
+|-
+| 4 || value 4 || value5 || value6
+|-
+| 7 || value 7 || value8 || value9
+|}
+""".strip()
+        )
+
+    def test_mediawiki_output_with_caption(self) -> None:
+        t = helper_table()
+        result = t.get_mediawiki_string(title="Optional caption", header=True)
+        assert (
+            result.strip()
+            == """
+{| class="wikitable"
+|+ Optional caption
+|-
+!  !! Field 1 !! Field 2 !! Field 3
+|-
+| 1 || value 1 || value2 || value3
+|-
+| 4 || value 4 || value5 || value6
+|-
+| 7 || value 7 || value8 || value9
+|}
+""".strip()
+        )
+
+    def test_mediawiki_output_with_attributes(self) -> None:
+        t = helper_table()
+        result = t.get_mediawiki_string(
+            attributes={"class": "mytable", "id": "table1"}, header=True
+        )
+        assert (
+            result.strip()
+            == """
+{| class="mytable" id="table1"
+|-
+!  !! Field 1 !! Field 2 !! Field 3
+|-
+| 1 || value 1 || value2 || value3
+|-
+| 4 || value 4 || value5 || value6
+|-
+| 7 || value 7 || value8 || value9
+|}
+""".strip()
+        )
+
+    def test_mediawiki_output_with_fields_option(self) -> None:
+        t = helper_table()
+        result = t.get_mediawiki_string(fields=["Field 1", "Field 3"], header=True)
+        assert (
+            result.strip()
+            == """
+{| class="wikitable"
+|-
+! Field 1 !! Field 3
+|-
+| value 1 || value3
+|-
+| value 4 || value6
+|-
+| value 7 || value9
+|}
+""".strip()
         )
 
 
@@ -3066,6 +3220,14 @@ class TestGeneralOutput:
         assert t.get_formatted_string("latex", border=False) == t.get_latex_string(
             border=False
         )
+
+    def test_mediawiki(self) -> None:
+        t = helper_table()
+        assert t.get_formatted_string("mediawiki") == t.get_mediawiki_string()
+        # args passed through
+        assert t.get_formatted_string(
+            "mediawiki", border=False
+        ) == t.get_mediawiki_string(border=False)
 
     def test_invalid(self) -> None:
         t = helper_table()
